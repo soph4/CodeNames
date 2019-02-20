@@ -9,7 +9,7 @@ SIZE = 5
 class CardType(Enum):
     RED = 8
     BLUE = 9
-    ASSASIN = 1
+    ASSASSIN = 1
     BYSTANDER = 7
 
 # loads the words from a given text file
@@ -34,6 +34,7 @@ def printList(wordList):
         print()
 
 # randomly selects 25 words for the game
+# creates a randomized list of Card objects each with an associated card type
 def selectWords(wordList):
 	
     chosenWords = []
@@ -46,7 +47,6 @@ def selectWords(wordList):
             chosenWords.append(Card(wordList[randNums[index]].lower(),i.name))
             num -= 1
             index += 1
-            print(i.name)
     random.shuffle(chosenWords)
     return chosenWords
 
@@ -58,7 +58,7 @@ def displayBoard(chosenWords):
         for j in range(SIZE):
             chosenWords[index].printWord()
             index  +=  1
-        print("\n") 
+        print()
 
 #Card class
 class Card:
@@ -66,12 +66,12 @@ class Card:
     def __init__(self, word, typeOfCard):
         self.word = word
         self.typeOfCard = typeOfCard
-        print("setting card type to:",self.typeOfCard)
 
-    #prints the word
+    #prints the card's word
     def printWord(self):
         print('{0: ^16}'.format(self.word), end="")
 
+#prints the type for each card 
 def printKey(key):
     index = 0
     for i in range(SIZE):
@@ -85,9 +85,4 @@ def main():
     chosenWords = selectWords(wordList)
     displayBoard(chosenWords)
     printKey(chosenWords)
-    #key = createKey()
-    #printKey(key)
-    #print(CardType.CardTYPE[0])
-    #for i in CardType:
-    #    print(i.value)
 main()
