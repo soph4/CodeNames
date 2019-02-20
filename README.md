@@ -1,2 +1,2 @@
 # CodeNames
-# This program will
+# This program will play the game CodeNames.
