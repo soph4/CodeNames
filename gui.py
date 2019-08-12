@@ -8,11 +8,15 @@ class App(tk.Frame):
         self.create_widgets()
         self.display_image()
     
+    def update_text(string):
+        print("String: ", string)
+
     def create_widgets(self):
-        self.hello = tk.Button(self)
-        self.hello["text"] = "Welcome to Code Names\n(click me)"
-        self.hello["command"] = self.welcome()
-        self.hello.pack(side="top")
+        #string = "bye"
+        self.hello = tk.Button(self, text="hello", command=lambda: update_text(1)).pack()
+        #self.hello["text"] = "Welcome to Code Names\n(click me)"
+        #self.hello["command"] = self.welcome()
+        #self.hello.pack(side="top")
         
         self.quit = tk.Button(self, text="QUIT",fg="red",command=self.master.destroy)
         self.quit.pack(side="bottom")
@@ -20,6 +24,9 @@ class App(tk.Frame):
     def welcome(self):
         print("Hello welcome to the game!")
     
+    #def update_text(string):
+    #    print("String:", string)
+
     def display_image(self):
         image = Image.open("cute-dog.jpg")
         image = image.resize((190,250), Image.ANTIALIAS)
