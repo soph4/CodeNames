@@ -1,5 +1,6 @@
 # File: codeNames.py
-# Description:
+# Description: This program codes the game CodeNames.
+
 import random
 from enum import Enum
 
@@ -26,7 +27,7 @@ def loadWords():
         words.append(line)
     return words
 
-# prints the give list
+# prints the given list
 def printList(wordList):
 
     for i in range(len(wordList)):
@@ -90,6 +91,7 @@ def printKey(key):
             index += 1
         print()
 
+#returns a list of containing what type of card, each card is
 def getKey(wordList):
     keyList = []
     index = 0
@@ -100,15 +102,16 @@ def getKey(wordList):
 
 def turn(board, key, team):
     valid = True
-    end = False
+    #end = False
     
     wordList = []
     for i in range(len(board)):
         wordList.append(board[i].word)
 
+    #asks for clue from other team member
+    word = giveClue()
+
     while valid == True:
-        #print()
-        #print("--------------------------------------------------------------------------")
         displayBoard(board)
         
         word = input("Word guess: ")
@@ -126,12 +129,12 @@ def turn(board, key, team):
                 elif (board[wordIndex].typeOfCard == "ASSASSIN"):
                     print("OH YIKES that's the ASSASSIN. You instantly lose")
                 else:
-                    print("Sorry that's the other team's card")
+                    print("Sorry that's the other team's card. That ends your turn.")
                 valid = False
             board[wordIndex].guessed = True
         else:
             print("That card was already guessed. Please choose another card")
-    return board
+    
 
 #checks whether red or blue team has won yet
 def checkWin(team, board):
@@ -141,9 +144,9 @@ def checkWin(team, board):
         if board[i].guessed == True and board[i].typeOfCard == team:
             count += 1
 
-    if team == cardType.RED.name and count == cardType.RED.value:
+    if team == CardType.RED.name and count == CardType.RED.value:
         return True
-    elif team == cardType.BLUE.name and count == cardType.BLUE.value:
+    elif team == CardType.BLUE.name and count == CardType.BLUE.value:
         return True
     else:
         return False
@@ -156,31 +159,54 @@ def checkLose(team, board):
         else:
             return False
 
+#team member enters clue they want to give to teammate
+def giveClue():
+    clue = input("Enter clue: ")
+    #does this need validation? checks for spaces? ignores if both words have capital letters?
+
+#returns the remaining number of cards team needs to guess
+def remainingCards(board, team):
+    count = 0
+    for i in range(NUM_CARDS):
+        if board[i].guessed == True and board[i].typeOfCard == team:
+            count += 1
+    if CardType.RED.name == team:
+        return CardType.RED.value - count
+    else:
+        return CardType.BLUE.value - count
+
 def main():
     wordList = loadWords()
+
+    #creates a list of 25 Cards
     chosenWords = selectWords(wordList)
-    #displayBoard(chosenWords)
     printKey(chosenWords)
 
     key = getKey(chosenWords)
-    lose = False
-    win = False
     continuePlaying = True
 
     while continuePlaying == True:
-        if lose!= True and win!= True:
-            board = turn(chosenWords,key, 'RED')
-            lose = checkLose('RED', board)
-            win = checkWin('RED', board)
-        else:
+        print("\nIts the RED teams turn")
+        print("The RED team has ", remainingCards(chosenWords, 'RED'), " more cards to guess\n")
+        turn(chosenWords,key, 'RED')
+        
+        if checkLose('RED', chosenWords):
+            print("The BLUE team has WON!")
+            continuePlaying = False
+        elif checkWin('RED', chosenWords):
+            print("The RED team has WON!")
             continuePlaying = False
 
-        if lose!= True and win!= True:
-            board = turn(chosenWords,key, 'BLUE')
-            lose = checkLose('BLUE', board)
-            win = checkWin('BLUE', board)
-        else:
-            continuePlaying = False
+        if continuePlaying:
+            print("\nIt's the BLUE teams turn")
+            print("The BLUE team has", remainingCards(chosenWords, 'BLUE'), " more cards to guess\n")
+            turn(chosenWords,key, 'BLUE')
 
-    #print(CardType.RED.name)
+            if checkLose('BLUE', chosenWords):
+                print("The RED team has won!")
+                continuePlaying = False
+            elif checkWin('BLUE', chosenWords):
+                print("The BLUE team has WON!")
+                continuePlaying = False
+
 main()
