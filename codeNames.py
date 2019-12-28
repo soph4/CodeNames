@@ -100,45 +100,50 @@ def getKey(wordList):
         index += 1
     return keyList
 
-def turn(board, key, team):
-    valid = True
-    #end = False
-    
+def getBoardWords(board):
     wordList = []
     for i in range(len(board)):
         wordList.append(board[i].word)
+    return wordList
+
+def turn(board, key, team):
+    valid = True
 
     #asks for clue from other team member
-    word = giveClue()
+    print("The CLUE is:", getClue(board))
+    wordList = getBoardWords(board)
+        
+    red_left = remainingCards(board, 'RED')
+    blue_left = remainingCards(board, 'BLUE')
 
-    while valid == True:
+    while valid == True and (red_left > 0 and blue_left > 0):
         displayBoard(board)
         
         word = input("Word guess: ")
         while(word not in wordList):
             word = input("Word is not valid. Enter another guess: ")
         
-
         wordIndex = wordList.index(word)
         if (board[wordIndex].guessed) == False: 
             if (board[wordIndex].typeOfCard == team):
-                print("Congrats that's one of your team's card")
+                print("CONGRATS", word, "is one of your team's cards")
             else:
                 if (board[wordIndex].typeOfCard == "BYSTANDER"):
                     print("Sorry that's a bystander")
                 elif (board[wordIndex].typeOfCard == "ASSASSIN"):
                     print("OH YIKES that's the ASSASSIN. You instantly lose")
                 else:
-                    print("Sorry that's the other team's card. That ends your turn.")
+                    print("SORRY", word, "is the other team's card. That ends your turn.")
                 valid = False
             board[wordIndex].guessed = True
+            printSummary(board)
         else:
             print("That card was already guessed. Please choose another card")
+        red_left = remainingCards(board, 'RED')
+        blue_left = remainingCards(board, 'BLUE')
     
-
 #checks whether red or blue team has won yet
 def checkWin(team, board):
-    
     count = 0
     for i in range(NUM_CARDS):
         if board[i].guessed == True and board[i].typeOfCard == team:
@@ -160,8 +165,33 @@ def checkLose(team, board):
             return False
 
 #team member enters clue they want to give to teammate
-def giveClue():
+def getClue(board):
     clue = input("Enter clue: ")
+    wordList = getBoardWords(board)
+    valid = False
+    while valid == False:
+        # Splits the clue into individual words
+        words = clue.strip().split()
+        # Testing that the clue is a proper noun (First letters are capital)
+        if len(words) == 2:
+            if words[0][0] == words[0][0].upper() and words[1][0] == words[1][0].upper():
+                valid = True
+            else:
+                valid = False 
+                clue = input("Enter clue: ")
+        # Testing that the clue is too long or too short
+        elif len(words) != 1:
+            print("The clue must be one word!")
+            valid = False
+            clue = input("Enter clue: ")
+        # Testing that the clue is not already a word on the board 
+        if clue in wordList:
+            print("That is a word on the board. Please select another clue!")
+            valid = False
+            clue = input("Enter clue: ")
+        else:
+            valid = True
+    return clue
     #does this need validation? checks for spaces? ignores if both words have capital letters?
 
 #returns the remaining number of cards team needs to guess
@@ -175,6 +205,11 @@ def remainingCards(board, team):
     else:
         return CardType.BLUE.value - count
 
+# Prints how many cards each team has left to guess
+def printSummary(board):
+   print("The RED team has ", remainingCards(board, 'RED'), " more cards to guess")
+   print("The BLUE team has ", remainingCards(board, 'BLUE'), " more cards to guess\n") 
+
 def main():
     wordList = loadWords()
 
@@ -186,8 +221,10 @@ def main():
     continuePlaying = True
 
     while continuePlaying == True:
-        print("\nIts the RED teams turn")
-        print("The RED team has ", remainingCards(chosenWords, 'RED'), " more cards to guess\n")
+        displayBoard(chosenWords)
+        printSummary(chosenWords)
+
+        print("Its the RED teams turn")
         turn(chosenWords,key, 'RED')
         
         if checkLose('RED', chosenWords):
@@ -198,8 +235,10 @@ def main():
             continuePlaying = False
 
         if continuePlaying:
+            print("\nUpdated board: ")
+            displayBoard(chosenWords)
             print("\nIt's the BLUE teams turn")
-            print("The BLUE team has", remainingCards(chosenWords, 'BLUE'), " more cards to guess\n")
+            printSummary(chosenWords)
             turn(chosenWords,key, 'BLUE')
 
             if checkLose('BLUE', chosenWords):
