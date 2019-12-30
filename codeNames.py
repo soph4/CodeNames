@@ -16,9 +16,9 @@ class CardType(Enum):
 # loads the words from a given text file
 def loadWords():
 
-    fileName = input("Please enter word list: ")
-    if(fileName == ""):
-        fileName = "wordlist2.txt"
+    #fileName = input("Please enter word list: ")
+    #if(fileName == ""):
+    fileName = "wordlist2.txt"
     text = open(fileName, "r")
     words = []
 
@@ -210,12 +210,12 @@ def printSummary(board):
    print("The RED team has ", remainingCards(board, 'RED'), " more cards to guess")
    print("The BLUE team has ", remainingCards(board, 'BLUE'), " more cards to guess\n") 
 
-def main():
+'''def main():
     wordList = loadWords()
 
     #creates a list of 25 Cards
     chosenWords = selectWords(wordList)
-    printKey(chosenWords)
+    #printKey(chosenWords)
 
     key = getKey(chosenWords)
     continuePlaying = True
@@ -248,4 +248,8 @@ def main():
                 print("The BLUE team has WON!")
                 continuePlaying = False
 
-main()
+main()'''
+
+# IDEAS to further improve the game
+#   - add an actual timer
+
