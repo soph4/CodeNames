@@ -14,7 +14,6 @@ class App(tk.Frame):
         super().__init__(master)
         self.pack()
         App.x = IntVar()
-        #App.text = StringVar()
         self.wordList = codeNames.loadWords()
         self.chosenWords = codeNames.selectWords(self.wordList)
         self.createButtons()
@@ -34,7 +33,7 @@ class App(tk.Frame):
             for j in range(5):
                 self.texts.append(StringVar())
                 self.texts[index].set(self.chosenWords[index].word)
-                tk.Button(row, textvariable = self.texts[index] , font = ("",18), command= lambda: self.wordClicked(index)).pack(ipadx=10, padx=5, pady=10, side=tk.BOTTOM)
+                tk.Button(row, textvariable = self.texts[index] , font = ("",18), command=lambda y=index: self.wordClicked(y)).pack(ipadx=10, padx=5, pady=10, side=tk.BOTTOM)
                 index += 1
             row.pack(ipadx=5, side = LEFT)
 
