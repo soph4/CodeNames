@@ -19,6 +19,7 @@ def loadWords():
     #fileName = input("Please enter word list: ")
     #if(fileName == ""):
     fileName = "wordlist2.txt"
+    #fileName = "cpcb_codenames_words.txt"
     text = open(fileName, "r")
     words = []
 
